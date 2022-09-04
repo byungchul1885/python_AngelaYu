@@ -1,10 +1,11 @@
+"""
 ####Introduction to Web Scraping#####
 from bs4 import BeautifulSoup
 
 #Alternative parsing module
-import lxml
+# import lxml
 
-with open("website.html") as file:
+with open("website.html", encoding='utf-8') as file:
         contents = file.read()
 
 #This is how you make soup
@@ -25,7 +26,7 @@ all_anchor_tags = soup.find_all(name="a")
 # print(all_anchor_tags)
 
 # for tag in all_anchor_tags:
-    #getText() gets the text in the tag.
+    # getText() gets the text in the tag.
     # print(tag.getText())
     # get() can get the value of any tag attribute.
     # print(tag.get("href"))
@@ -46,7 +47,7 @@ print(soup.select_one(selector=".company a"))
 print(soup.select("a"))
 
 
-
+"""
 ##############Scraping Hacker News#########
 from bs4 import BeautifulSoup
 import requests
@@ -55,36 +56,25 @@ response = requests.get("https://news.ycombinator.com/news")
 yc_web_page = response.text
 
 soup = BeautifulSoup(yc_web_page, "html.parser")
-articles = soup.find_all(name="a", class_="storylink")
+articles = soup.find_all(name="a", class_="titlelink")
+
 article_texts = []
 article_links = []
+
+# <a href="http://senwerks.com/hacktheplanet/Solving-the-Australian-Signals-Directorate-cryptography-challenge-coin.html" class="titlelink">Solving the Australian Signals Directorate cryptography challenge coin</a>
 for article_tag in articles:
     text = article_tag.getText()
     article_texts.append(text)
     link = article_tag.get("href")
     article_links.append(link)
 
-article_upvotes = [int(score.getText().split()[0]) for score in soup.find_all(name="span", class_="score")]
+# <span class="score" id="score_32706673">751 points</span>
+article_upvotes = [int(score.getText().split()[0]) 
+                   for score 
+                   in soup.find_all(name="span", class_="score")]
 
 largest_number = max(article_upvotes)
 largest_index = article_upvotes.index(largest_number)
 
 print(article_texts[largest_index])
 print(article_links[largest_index])
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
